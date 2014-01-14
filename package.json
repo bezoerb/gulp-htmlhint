@@ -1,17 +1,15 @@
 {
   "name": "gulp-htmlhint",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A plugin for Gulp",
   "keywords": [
     "gulpplugin"
   ],
   "homepage": "https://github.com/bezoerb/gulp-htmlhint",
-  "bugs": "https://github.com/bezoerb/gulp-htmlhint/issues",
-  "author": {
-    "name": "Ben Zörb",
-    "email": "",
-    "url": "https://github.com/bezoerb"
+  "bugs": {
+    "url": "https://github.com/bezoerb/gulp-htmlhint/issues"
   },
+  "author": "Ben Zörb (https://github.com/bezoerb)",
   "main": "./index.js",
   "repository": {
     "type": "git",
@@ -38,5 +36,9 @@
     {
       "type": "MIT"
     }
-  ]
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "license": "MIT"
 }
