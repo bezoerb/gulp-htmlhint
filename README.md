@@ -46,7 +46,7 @@ Default value: `default reporter`
 
 Specify a custom reporter for error messages
 
-```json
+```
 {
   "reporter": function(message){
     gutil.log(message.line,message.col,message.message,message.evidence);
