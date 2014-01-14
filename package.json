@@ -1,0 +1,42 @@
+{
+  "name": "gulp-htmlhint",
+  "version": "0.0.0",
+  "description": "A plugin for Gulp",
+  "keywords": [
+    "gulpplugin"
+  ],
+  "homepage": "https://github.com/bezoerb/gulp-htmlhint",
+  "bugs": "https://github.com/bezoerb/gulp-htmlhint/issues",
+  "author": {
+    "name": "Ben Zörb",
+    "email": "",
+    "url": "https://github.com/bezoerb"
+  },
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bezoerb/gulp-htmlhint.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "event-stream": "*"
+  },
+  "devDependencies": {
+    "mocha": "~1.14.0",
+    "should": "~2.1.0",
+    "gulp-util": "~2.2.0",
+    "htmlhint": "~0.9.3",
+    "lodash": "~2.4.1"
+  },
+  "engines": {
+    "node": ">=0.8.0",
+    "npm": ">=1.2.10"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
