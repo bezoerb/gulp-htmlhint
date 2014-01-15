@@ -27,7 +27,7 @@ gulp.src("./src/*.html")
 
 See all rules here: [https://github.com/yaniswang/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
 
-If options is empty, task will scan nothing.
+If options is empty, task use standard options.
 
 #### options.htmlhintrc
 Type: `String`
@@ -40,26 +40,6 @@ If this filename is specified, options and globals defined therein will be used.
   "tag-pair": true,
 }
 ```
-
-#### options.reporter
-Type: `Function`
-Default value: `default reporter`
-
-Specify a custom reporter for error messages
-
-```
-{
-  "reporter": function(message){
-    gutil.log(message.line,message.col,message.message,message.evidence);
-  },
-}
-```
-
-#### options.force
-Type: `Boolean`
-Default value: `false`
-
-Report HTMLHint errors but dont fail the task
 
 
 ## License
