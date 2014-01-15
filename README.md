@@ -16,8 +16,9 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var htmlhint = require("gulp-htmlhint");
 
-gulp.src("./src/*.ext")
+gulp.src("./src/*.html")
 	.pipe(htmlhint())
+	.pipe(htmlhint.reporter());
 ```
 
 ## API
