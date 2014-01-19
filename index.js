@@ -2,7 +2,8 @@ var es = require('event-stream'),
     fs = require('fs'),
     _ = require('lodash'),
     gutil = require('gulp-util'),
-    HTMLHint = require('htmlhint').HTMLHint;
+    HTMLHint = require('htmlhint').HTMLHint,
+    c = gutil.colors;
 
 var formatOutput = function(report, file, options) {
     if (!report.length) {
@@ -13,7 +14,7 @@ var formatOutput = function(report, file, options) {
 
     var filePath = (file.path || 'stdin');
 
-    gutil.log(report);
+//    gutil.log(report);
 
     // Handle errors
     var messages = report.map(function(err) {
@@ -99,7 +100,7 @@ var defaultReporter = function(file) {
     gutil.log(c.cyan(errorCount)+' error'+plural+' found in '+c.magenta(file.path));
 
     file.htmlhint.messages.forEach(function(result) {
-        var message = result.message,
+        var message = result.error,
             evidence = message.evidence,
             col = message.col;
 
@@ -115,14 +116,14 @@ var defaultReporter = function(file) {
         gutil.log(
             gutil.colors.red('[') +
             (
-                typeof result.line !== 'undefined' ?
-                    gutil.colors.yellow( 'L' + result.line ) +
+                typeof message.line !== 'undefined' ?
+                    gutil.colors.yellow( 'L' + message.line ) +
                     gutil.colors.red(':') +
-                    gutil.colors.yellow( 'C' + result.col )
+                    gutil.colors.yellow( 'C' + message.col )
                 : gutil.colors.yellow( 'GENERAL' )
             ) +
             gutil.colors.red(']') +
-            gutil.colors.yellow(' ' + message) + ' (' + message.rule.id + ')'
+            gutil.colors.yellow(' ' + message.message) + ' (' + message.rule.id + ')'
         );
         gutil.log(evidence);
 
