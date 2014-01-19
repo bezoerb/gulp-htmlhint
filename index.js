@@ -142,7 +142,7 @@ htmlhintPlugin.reporter = function(customReporter) {
 
     return es.map(function(file, cb) {
         // Only report if CSSLint was ran and errors were found
-        if (file.htmlhint && !file.csslint.htmlhint) {
+        if (file.htmlhint && !file.htmlhint.success) {
             reporter(file);
         }
 
