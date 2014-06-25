@@ -21,7 +21,6 @@
   "dependencies": {
     "gulp-util": "~2.2.0",
     "htmlhint": "~0.9.5",
-    "lodash": "~2.4.1",
     "through2": "^0.5.1"
   },
   "devDependencies": {

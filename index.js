@@ -1,5 +1,4 @@
 var fs = require('fs'),
-    _ = require('lodash'),
     through2 = require('through2'),
     gutil = require('gulp-util'),
     HTMLHint = require('htmlhint').HTMLHint,
@@ -68,9 +67,9 @@ var htmlhintPlugin = function(options){
     }
 
     // Build a list of all available rules
-    _.forEach(HTMLHint.defaultRuleset, function(rule, key){
+    for(var key in HTMLHint.defaultRuleset) {
         ruleset[key] = 1;
-    });
+    }
 
 
     // normalize htmlhint options
