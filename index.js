@@ -1,6 +1,6 @@
-var es = require('event-stream'),
-    fs = require('fs'),
+var fs = require('fs'),
     _ = require('lodash'),
+    through2 = require('through2'),
     gutil = require('gulp-util'),
     HTMLHint = require('htmlhint').HTMLHint,
     c = gutil.colors;
@@ -83,15 +83,13 @@ var htmlhintPlugin = function(options){
         }
     }
 
-    return es.map(function(file, cb){
-        var report = HTMLHint.verify(String(file.contents), ruleset);
+    return through2.obj(function (file, enc, cb) {
+        var report = HTMLHint.verify(file.contents.toString(), ruleset);
 
         // send status down-stream
         file.htmlhint = formatOutput(report, file, options);
         cb(null, file);
-
     });
-
 };
 
 var defaultReporter = function(file){
@@ -139,13 +137,13 @@ htmlhintPlugin.reporter = function(customReporter){
         throw new Error('Invalid reporter');
     }
 
-    return es.map(function(file, cb){
+    return through2.obj(function(file, enc, cb){
         // Only report if HTMLHint ran and errors were found
         if (file.htmlhint && !file.htmlhint.success) {
             reporter(file);
         }
 
-        return cb(null, file);
+        cb(null, file);
     });
 };
 
