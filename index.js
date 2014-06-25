@@ -15,16 +15,13 @@ var formatOutput = function(report, file, options){
     var filePath = (file.path || 'stdin');
 
     // Handle errors
-    var messages = report.map(function(err){
-        if (!err) {
-            return;
-        }
+    var messages = report.filter(function(err){
+        return err;
+    }).map(function(err){
         return {
             file: filePath,
             error: err
         };
-    }).filter(function(err){
-        return err;
     });
 
     var output = {
