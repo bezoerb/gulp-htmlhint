@@ -1,6 +1,6 @@
 {
   "name": "gulp-htmlhint",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A plugin for Gulp",
   "keywords": [
     "gulpplugin"
