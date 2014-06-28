@@ -150,4 +150,23 @@ describe("gulp-htmlhint", function(){
         stream.end();
     });
 
+    it('should emit error on failure', function(done) {
+        var file = getFile('fixtures/invalid.html');
+
+        var stream = htmlhint();
+
+        var failStream = htmlhint.reporter('fail');
+        stream.pipe(failStream);
+
+        failStream.on('error', function (err) {
+            should.exist(err);
+            err.message.indexOf(file.relative).should.not.equal(-1, 'should say which file');
+            done();
+        });
+
+        stream.write(file);
+        stream.end();
+    });
+
+
 });

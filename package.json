@@ -24,8 +24,8 @@
     "through2": "^0.5.1"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
-    "should": "~2.1.0"
+    "mocha": "^1.20.1",
+    "should": "^4.0.4"
   },
   "engines": {
     "node": ">=0.8.0",

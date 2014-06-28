@@ -1,6 +1,7 @@
 var fs = require('fs'),
     through2 = require('through2'),
     gutil = require('gulp-util'),
+    PluginError = require('gulp-util').PluginError,
     HTMLHint = require('htmlhint').HTMLHint,
     c = gutil.colors;
 
@@ -129,6 +130,10 @@ htmlhintPlugin.reporter = function(customReporter){
         reporter = customReporter;
     }
 
+    if (customReporter === 'fail') {
+        return htmlhintPlugin.failReporter();
+    }
+
     if (typeof reporter === 'undefined') {
         throw new Error('Invalid reporter');
     }
@@ -140,6 +145,21 @@ htmlhintPlugin.reporter = function(customReporter){
         }
 
         cb(null, file);
+    });
+};
+
+htmlhintPlugin.failReporter = function(){
+    'use strict';
+    return through2.obj(function (file, enc, cb) {
+        // something to report and has errors
+        var error;
+        if (file.htmlhint && !file.htmlhint.success) {
+            error = new PluginError('gulp-htmlhint', {
+                message: 'HTMLHint failed for: ' + file.relative,
+                showStack: false
+            });
+        }
+        cb(error, file);
     });
 };
 
