@@ -18,8 +18,9 @@ var htmlhint = require("gulp-htmlhint");
 
 gulp.src("./src/*.html")
 	.pipe(htmlhint())
-	.pipe(htmlhint.reporter());
 ```
+
+
 
 ## API
 
@@ -39,6 +40,30 @@ If this filename is specified, options and globals defined therein will be used.
 {
   "tag-pair": true,
 }
+```
+
+## Reporters
+
+### Default reporter
+```javascript
+var htmlhint = require("gulp-htmlhint");
+
+gulp.src("./src/*.html")
+	.pipe(htmlhint())
+	.pipe(htmlhint.reporter())
+```
+
+
+### Fail reporter
+
+Use this reporter if you want your task to fail in case of a HTMLHint Error.
+
+```javascript
+var htmlhint = require("gulp-htmlhint");
+
+gulp.src("./src/*.html")
+	.pipe(htmlhint())
+	.pipe(htmlhint.failReporter())
 ```
 
 
