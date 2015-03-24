@@ -16,7 +16,7 @@
     "url": "git://github.com/bezoerb/gulp-htmlhint.git"
   },
   "scripts": {
-    "test": "jshint . && mocha test/*.js"
+    "test": "node_modules/.bin/jshint . && mocha test/*.js"
   },
   "dependencies": {
     "gulp-util": "^3.0.0",
@@ -24,6 +24,7 @@
     "through2": "^0.6.3"
   },
   "devDependencies": {
+    "jshint": "^2.6.3",
     "mocha": "^2.2.1",
     "should": "^5.2.0",
     "vinyl-fs": "^1.0.0"
