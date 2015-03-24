@@ -1,4 +1,5 @@
 var fs = require('fs'),
+    os = require('os'),
     through2 = require('through2'),
     gutil = require('gulp-util'),
     PluginError = require('gulp-util').PluginError,
@@ -89,22 +90,15 @@ var htmlhintPlugin = function(options){
     });
 };
 
-var defaultReporter = function(file){
+function getMessagesForFile(file){
     'use strict';
-    var errorCount = file.htmlhint.errorCount;
-    var plural = errorCount === 1 ? '' : 's';
-
-    process.stderr.write('\x07'); // Send a beep to the terminal so it bounces
-
-    gutil.log(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
-
-    file.htmlhint.messages.forEach(function(result){
-        var message = result.error,
+    return file.htmlhint.messages.map(function(msg){
+        var message = msg.error,
             evidence = message.evidence,
             line = message.line,
             col = message.col,
             detail = typeof message.line !== 'undefined' ?
-                c.yellow('L' + line) + c.red(':') + c.yellow('C' + col) : c.yellow('GENERAL');
+            c.yellow('L' + line) + c.red(':') + c.yellow('C' + col) : c.yellow('GENERAL');
 
         if (col === 0) {
             evidence = c.red('?') + evidence;
@@ -114,11 +108,26 @@ var defaultReporter = function(file){
             evidence = evidence.slice(0, col - 1) + c.red(evidence[col - 1]) + evidence.slice(col);
         }
 
-        gutil.log(
-            c.red('[') + detail + c.red(']') + c.yellow(' ' + message.message) + ' (' + message.rule.id + ')'
-        );
-        gutil.log(evidence);
+        return {
+            message: c.red('[') + detail + c.red(']') + c.yellow(' ' + message.message) + ' (' + message.rule.id + ')',
+            evidence: evidence
+        };
+    });
+}
 
+
+var defaultReporter = function(file){
+    'use strict';
+    var errorCount = file.htmlhint.errorCount;
+    var plural = errorCount === 1 ? '' : 's';
+
+    process.stderr.write('\x07'); // Send a beep to the terminal so it bounces
+
+    gutil.log(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
+
+    getMessagesForFile(file).forEach(function(data){
+        gutil.log(data.message);
+        gutil.log(data.evidence);
     });
 };
 
@@ -154,8 +163,15 @@ htmlhintPlugin.failReporter = function(){
         // something to report and has errors
         var error;
         if (file.htmlhint && !file.htmlhint.success) {
+            var errorCount = file.htmlhint.errorCount;
+            var plural = errorCount === 1 ? '' : 's';
+            var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+            var messages = [msg].concat(getMessagesForFile(file).map(function(m){
+                return m.message;
+            }));
+
             error = new PluginError('gulp-htmlhint', {
-                message: 'HTMLHint failed for: ' + file.relative,
+                message: messages.join(os.EOL),
                 showStack: false
             });
         }
