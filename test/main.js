@@ -1,4 +1,5 @@
 /*global describe, it*/
+/*jshint expr: true*/
 "use strict";
 
 var fs = require("fs"),
@@ -186,6 +187,30 @@ describe('htmlhint.reporter', function() {
 
         stream.once('end', function() {
             a.should.equal(17);
+            done();
+        });
+    });
+
+});
+
+describe('htmlhint.errorreporter', function(){
+    it('should throw an error when using on an invalid file', function(done){
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failReporter());
+
+
+
+        stream.on('error', function(err){
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, Missing: [ </h1> ] (tag-pair)');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function() {
+            error.should.be.true;
             done();
         });
     });
