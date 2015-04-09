@@ -34,13 +34,21 @@ If options is empty, task use standard options.
 Type: `String`
 Default value: `null`
 
-If this filename is specified, options and globals defined therein will be used. Task and target options override the options within the `htmlhintrc` file. The `htmlhintrc` file must be valid JSON and looks something like this:
+If this filename is specified, options and globals defined there will be used. Task and target options override the options within the `htmlhintrc` file. The `htmlhintrc` file must be valid JSON and looks something like this:
 
 ```json
 {
   "tag-pair": true,
 }
 ```
+
+```javascript
+var htmlhint = require("gulp-htmlhint");
+
+gulp.src("./src/*.html")
+	.pipe(htmlhint('.htmlhintrc'))
+```
+
 
 ## Reporters
 
