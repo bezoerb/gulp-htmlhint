@@ -131,6 +131,11 @@ var defaultReporter = function(file){
     });
 };
 
+htmlhintPlugin.addRule = function(rule) {
+	'use strict';
+	return HTMLHint.addRule(rule);
+};
+
 htmlhintPlugin.reporter = function(customReporter){
     'use strict';
     var reporter = defaultReporter;
