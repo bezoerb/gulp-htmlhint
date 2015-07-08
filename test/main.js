@@ -8,6 +8,7 @@ var fs = require("fs"),
     vfs = require('vinyl-fs'),
     path = require('path'),
     File = gutil.File,
+	HTMLHint = require('htmlhint').HTMLHint,
     htmlhint = require("../");
 
 require("mocha");
@@ -169,6 +170,17 @@ describe("gulp-htmlhint", function() {
         stream.write(file);
         stream.end();
     });
+
+	it('should add a htmlhint rule', function() {
+		var fakeRule = {
+			id: 'foo',
+			description: 'bar',
+			init: function() {}
+		};
+		htmlhint.addRule(fakeRule);
+		HTMLHint.rules[fakeRule.id].should.equal(fakeRule);
+	});
+
 });
 
 describe('htmlhint.reporter', function() {
