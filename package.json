@@ -21,12 +21,12 @@
   "dependencies": {
     "gulp-util": "^3.0.0",
     "htmlhint": "^0.9.5",
-    "through2": "^0.6.3"
+    "through2": "^2.0.0"
   },
   "devDependencies": {
     "jshint": "^2.6.3",
     "mocha": "^2.2.1",
-    "should": "^5.2.0",
+    "should": "^7.0.1",
     "vinyl-fs": "^1.0.0"
   },
   "engines": {
