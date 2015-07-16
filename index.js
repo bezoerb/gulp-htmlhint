@@ -59,7 +59,7 @@ var htmlhintPlugin = function(options){
     // read config file for htmlhint if available
     if (options.htmlhintrc) {
         try {
-            var externalOptions = fs.readFileSync(options.htmlhintrc);
+            var externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
             options = JSON.parse(stripJsonComments(externalOptions));
         } catch (err) {
             throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
