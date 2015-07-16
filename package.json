@@ -21,6 +21,7 @@
   "dependencies": {
     "gulp-util": "^3.0.0",
     "htmlhint": "^0.9.5",
+    "strip-json-comments": "^1.0.2",
     "through2": "^2.0.0"
   },
   "devDependencies": {

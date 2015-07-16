@@ -2,6 +2,7 @@ var fs = require('fs'),
     os = require('os'),
     through2 = require('through2'),
     gutil = require('gulp-util'),
+	stripJsonComments = require('strip-json-comments'),
     PluginError = require('gulp-util').PluginError,
     HTMLHint = require('htmlhint').HTMLHint,
     c = gutil.colors;
@@ -59,7 +60,7 @@ var htmlhintPlugin = function(options){
     if (options.htmlhintrc) {
         try {
             var externalOptions = fs.readFileSync(options.htmlhintrc);
-            options = JSON.parse(externalOptions);
+            options = JSON.parse(stripJsonComments(externalOptions));
         } catch (err) {
             throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
         }
