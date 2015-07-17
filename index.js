@@ -145,9 +145,13 @@ htmlhintPlugin.reporter = function(customReporter){
         reporter = customReporter;
     }
 
-    if (customReporter === 'fail') {
-        return htmlhintPlugin.failReporter();
-    }
+	if (typeof customReporter === 'string') {
+	    if (customReporter === 'fail') {
+	        return htmlhintPlugin.failReporter();
+	    } else {
+	    	reporter = require(customReporter);
+	    }
+	}
 
     if (typeof reporter === 'undefined') {
         throw new Error('Invalid reporter');

@@ -25,6 +25,7 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
+    "htmlhint-stylish": "^1.0.0",
     "jshint": "^2.6.3",
     "mocha": "^2.2.1",
     "should": "^7.0.1",

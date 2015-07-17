@@ -203,6 +203,32 @@ describe('htmlhint.reporter', function() {
         });
     });
 
+	it('should load custom reporters by package name', function(done) {
+		var valid = 0;
+
+        var stream = vfs.src('test/fixtures/valid.html')
+	        .pipe(htmlhint())
+	        .pipe(htmlhint.reporter('htmlhint-stylish'));
+
+		stream.on('error', function(err) {
+			should.not.exist(err);
+		});
+
+		stream.on('data', function(file) {
+			should.exist(file);
+			file.htmlhint.success.should.be.true;
+            should.exist(file.path);
+            should.exist(file.relative);
+            should.exist(file.contents);
+            ++valid;
+		});
+
+	    stream.once('end', function() {
+			valid.should.equal(1);
+	        done();
+	    });
+	});
+
 });
 
 describe('htmlhint.errorreporter', function(){
