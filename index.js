@@ -163,23 +163,31 @@ htmlhintPlugin.reporter = function(customReporter){
     });
 };
 
-htmlhintPlugin.failReporter = function(){
+htmlhintPlugin.failReporter = function(opts){
     'use strict';
+	opts = opts || {};
     return through2.obj(function (file, enc, cb) {
         // something to report and has errors
         var error;
         if (file.htmlhint && !file.htmlhint.success) {
-            var errorCount = file.htmlhint.errorCount;
-            var plural = errorCount === 1 ? '' : 's';
-            var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
-            var messages = [msg].concat(getMessagesForFile(file).map(function(m){
-                return m.message;
-            }));
+			if (opts.suppress === true) {
+	            error = new PluginError('gulp-htmlhint', {
+	                message: 'HTMLHint failed.',
+	                showStack: false
+	            });
+			} else {
+	            var errorCount = file.htmlhint.errorCount;
+	            var plural = errorCount === 1 ? '' : 's';
+	            var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+	            var messages = [msg].concat(getMessagesForFile(file).map(function(m){
+	                return m.message;
+	            }));
 
-            error = new PluginError('gulp-htmlhint', {
-                message: messages.join(os.EOL),
-                showStack: false
-            });
+	            error = new PluginError('gulp-htmlhint', {
+	                message: messages.join(os.EOL),
+	                showStack: false
+	            });
+			}
         }
         cb(error, file);
     });

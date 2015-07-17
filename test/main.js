@@ -226,4 +226,28 @@ describe('htmlhint.errorreporter', function(){
             done();
         });
     });
+
+    it('should not show file errors if suppress option is explicitly set', function(done){
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failReporter({
+				suppress: true
+            }));
+
+
+
+        stream.on('error', function(err){
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed.');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function() {
+            error.should.be.true;
+            done();
+        });
+    });
+
 });
