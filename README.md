@@ -79,7 +79,7 @@ Optionally, you can pass the `htmlhint.failReporter` a config object
 
 #### Plugin options:
 
-##### errors
+__errors__
 
 When set to `false`, it does not display file errors on failure.
 Use in conjunction with the default and/or custom reporter(s).
