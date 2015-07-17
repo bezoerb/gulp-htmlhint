@@ -77,9 +77,9 @@ gulp.src("./src/*.html")
 
 Optionally, you can pass the `htmlhint.failReporter` a config object
 
-#### Plugin options:
+__Plugin options:__
 
-__errors__
+*errors*
 
 When set to `false`, it does not display file errors on failure.
 Use in conjunction with the default and/or custom reporter(s).
