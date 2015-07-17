@@ -79,9 +79,9 @@ Optionally, you can pass the `htmlhint.failReporter` a config object
 
 __Plugin options:__
 
-- *errors*
+- *supress*
 
-  When set to `false`, it does not display file errors on failure.
+  When set to `true`, it does not display file errors on failure.
   Use in conjunction with the default and/or custom reporter(s).
   Prevents duplication of error messages when used along with another reporter.
 
@@ -91,7 +91,7 @@ __Plugin options:__
   gulp.src("./src/*.html")
 	  .pipe(htmlhint())
 	  .pipe(htmlhint.reporter("htmlhint-stylish"))
-	  .pipe(htmlhint.failReporter({ errors: false })
+	  .pipe(htmlhint.failReporter({ suppress: true })
   ```
 
 ## License

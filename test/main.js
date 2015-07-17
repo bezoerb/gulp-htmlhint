@@ -227,12 +227,12 @@ describe('htmlhint.errorreporter', function(){
         });
     });
 
-    it('should throw not show file errors if option is explicitly disabled', function(done){
+    it('should not show file errors if suppress option is explicitly set', function(done){
         var error = false;
         var stream = vfs.src('test/fixtures/invalid.html')
             .pipe(htmlhint())
             .pipe(htmlhint.failReporter({
-				errors: false
+				suppress: true
             }));
 
 

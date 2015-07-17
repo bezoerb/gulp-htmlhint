@@ -170,7 +170,12 @@ htmlhintPlugin.failReporter = function(opts){
         // something to report and has errors
         var error;
         if (file.htmlhint && !file.htmlhint.success) {
-			if (opts.errors !== false) {
+			if (opts.suppress === true) {
+	            error = new PluginError('gulp-htmlhint', {
+	                message: 'HTMLHint failed.',
+	                showStack: false
+	            });
+			} else {
 	            var errorCount = file.htmlhint.errorCount;
 	            var plural = errorCount === 1 ? '' : 's';
 	            var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
@@ -180,11 +185,6 @@ htmlhintPlugin.failReporter = function(opts){
 
 	            error = new PluginError('gulp-htmlhint', {
 	                message: messages.join(os.EOL),
-	                showStack: false
-	            });
-			} else {
-	            error = new PluginError('gulp-htmlhint', {
-	                message: 'HTMLHint failed.',
 	                showStack: false
 	            });
 			}
