@@ -76,20 +76,21 @@ gulp.src("./src/*.html")
 
 Optionally, you can pass the `htmlhint.failReporter` a config object
 
-Plugin options:
+#### Plugin options:
 
 ##### errors
 
 - Defaults to `true`
-- When `false`, does not display file errors on failure. Use in conjunction with standard and/or custom reporter(s).
+- When set to `false`, it does not display file errors on failure.
+  Use in conjunction with standard and/or custom reporter(s). Prevents duplication of error messages when used along with another reporter.
 
 ```javascript
 var htmlhint = require("gulp-htmlhint");
 
 gulp.src("./src/*.html")
 	.pipe(htmlhint())
-	.pipe(htmlhint.reporter('htmlhint-stylish))
-	.pipe(htmlhint.failReporter())
+	.pipe(htmlhint.reporter("htmlhint-stylish"))
+	.pipe(htmlhint.failReporter({ errors: false })
 ```
 
 ## License
