@@ -5,6 +5,7 @@ var fs = require('fs'),
 	stripJsonComments = require('strip-json-comments'),
     PluginError = require('gulp-util').PluginError,
     HTMLHint = require('htmlhint').HTMLHint,
+	beep = gutil.beep,
     c = gutil.colors;
 
 var formatOutput = function(report, file, options){
@@ -122,7 +123,7 @@ var defaultReporter = function(file){
     var errorCount = file.htmlhint.errorCount;
     var plural = errorCount === 1 ? '' : 's';
 
-    process.stderr.write('\x07'); // Send a beep to the terminal so it bounces
+	beep();
 
     gutil.log(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
 
