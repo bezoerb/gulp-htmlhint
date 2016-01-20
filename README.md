@@ -79,7 +79,7 @@ Optionally, you can pass the `htmlhint.failReporter` a config object
 
 __Plugin options:__
 
-- *supress*
+- *suppress*
 
   When set to `true`, it does not display file errors on failure.
   Use in conjunction with the default and/or custom reporter(s).
