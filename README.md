@@ -99,10 +99,10 @@ __Plugin options:__
 [MIT License](bezoerb.mit-license.org)
 
 [npm-url]: https://npmjs.org/package/gulp-htmlhint
-[npm-image]: https://badge.fury.io/js/gulp-htmlhint.png
+[npm-image]: https://badge.fury.io/js/gulp-htmlhint.svg
 
 [travis-url]: http://travis-ci.org/bezoerb/gulp-htmlhint
-[travis-image]: https://secure.travis-ci.org/bezoerb/gulp-htmlhint.png?branch=master
+[travis-image]: https://secure.travis-ci.org/bezoerb/gulp-htmlhint.svg?branch=master
 
 [depstat-url]: https://david-dm.org/bezoerb/gulp-htmlhint
-[depstat-image]: https://david-dm.org/bezoerb/gulp-htmlhint.png
+[depstat-image]: https://david-dm.org/bezoerb/gulp-htmlhint.svg
