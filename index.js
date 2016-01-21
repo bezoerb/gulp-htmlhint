@@ -1,14 +1,15 @@
-var fs = require('fs'),
-    os = require('os'),
-    through2 = require('through2'),
-    gutil = require('gulp-util'),
-	stripJsonComments = require('strip-json-comments'),
-    PluginError = require('gulp-util').PluginError,
-    HTMLHint = require('htmlhint').HTMLHint,
-	beep = gutil.beep,
-    c = gutil.colors;
+var fs = require('fs');
+var os = require('os');
+var through2 = require('through2');
+var gutil = require('gulp-util');
+var stripJsonComments = require('strip-json-comments');
+var PluginError = require('gulp-util').PluginError;
+var HTMLHint = require('htmlhint').HTMLHint;
 
-var formatOutput = function(report, file, options){
+var beep = gutil.beep;
+var c = gutil.colors;
+
+var formatOutput = function (report, file, options) {
     'use strict';
     if (!report.length) {
         return {
@@ -19,9 +20,9 @@ var formatOutput = function(report, file, options){
     var filePath = (file.path || 'stdin');
 
     // Handle errors
-    var messages = report.filter(function(err){
+    var messages = report.filter(function (err) {
         return err;
-    }).map(function(err){
+    }).map(function (err) {
         return {
             file: filePath,
             error: err
@@ -38,7 +39,7 @@ var formatOutput = function(report, file, options){
     return output;
 };
 
-var htmlhintPlugin = function(options){
+var htmlhintPlugin = function (options) {
     'use strict';
 
     var ruleset = {};
@@ -46,7 +47,6 @@ var htmlhintPlugin = function(options){
     if (!options) {
         options = {};
     }
-
 
     // Read Htmlhint options from a specified htmlhintrc file.
     if (typeof options === 'string') {
@@ -68,18 +68,19 @@ var htmlhintPlugin = function(options){
     }
 
     // Build a list of all available rules
-    for(var key in HTMLHint.defaultRuleset) {
-        ruleset[key] = 1;
+    for (var key in HTMLHint.defaultRuleset) {
+        if (HTMLHint.defaultRuleset.hasOwnProperty(key)) {
+            ruleset[key] = 1;
+        }
     }
-
 
     // normalize htmlhint options
     // htmllint only checks for rulekey, so remove rule if set to false
     for (var rule in options) {
-        if (!options[rule]) {
-            delete ruleset[rule];
-        } else {
+        if (options[rule]) {
             ruleset[rule] = options[rule];
+        } else {
+            delete ruleset[rule];
         }
     }
 
@@ -92,15 +93,20 @@ var htmlhintPlugin = function(options){
     });
 };
 
-function getMessagesForFile(file){
+function getMessagesForFile(file) {
     'use strict';
-    return file.htmlhint.messages.map(function(msg){
-        var message = msg.error,
-            evidence = message.evidence,
-            line = message.line,
-            col = message.col,
-            detail = typeof message.line !== 'undefined' ?
-            c.yellow('L' + line) + c.red(':') + c.yellow('C' + col) : c.yellow('GENERAL');
+    return file.htmlhint.messages.map(function (msg) {
+        var message = msg.error;
+        var evidence = message.evidence;
+        var line = message.line;
+        var col = message.col;
+        var detail;
+
+        if (line) {
+            detail = c.yellow('L' + line) + c.red(':') + c.yellow('C' + col);
+        } else {
+            detail = c.yellow('GENERAL');
+        }
 
         if (col === 0) {
             evidence = c.red('?') + evidence;
@@ -117,28 +123,27 @@ function getMessagesForFile(file){
     });
 }
 
-
-var defaultReporter = function(file){
+var defaultReporter = function (file) {
     'use strict';
     var errorCount = file.htmlhint.errorCount;
     var plural = errorCount === 1 ? '' : 's';
 
-	beep();
+    beep();
 
     gutil.log(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
 
-    getMessagesForFile(file).forEach(function(data){
+    getMessagesForFile(file).forEach(function (data) {
         gutil.log(data.message);
         gutil.log(data.evidence);
     });
 };
 
-htmlhintPlugin.addRule = function(rule) {
-	'use strict';
-	return HTMLHint.addRule(rule);
+htmlhintPlugin.addRule = function (rule) {
+    'use strict';
+    return HTMLHint.addRule(rule);
 };
 
-htmlhintPlugin.reporter = function(customReporter){
+htmlhintPlugin.reporter = function (customReporter) {
     'use strict';
     var reporter = defaultReporter;
 
@@ -146,19 +151,19 @@ htmlhintPlugin.reporter = function(customReporter){
         reporter = customReporter;
     }
 
-	if (typeof customReporter === 'string') {
-	    if (customReporter === 'fail') {
-	        return htmlhintPlugin.failReporter();
-	    } else {
-	    	reporter = require(customReporter);
-	    }
-	}
+    if (typeof customReporter === 'string') {
+        if (customReporter === 'fail') {
+            return htmlhintPlugin.failReporter();
+        }
+
+        reporter = require(customReporter);
+    }
 
     if (typeof reporter === 'undefined') {
         throw new Error('Invalid reporter');
     }
 
-    return through2.obj(function(file, enc, cb){
+    return through2.obj(function (file, enc, cb) {
         // Only report if HTMLHint ran and errors were found
         if (file.htmlhint && !file.htmlhint.success) {
             reporter(file);
@@ -168,36 +173,34 @@ htmlhintPlugin.reporter = function(customReporter){
     });
 };
 
-htmlhintPlugin.failReporter = function(opts){
+htmlhintPlugin.failReporter = function (opts) {
     'use strict';
-	opts = opts || {};
+    opts = opts || {};
     return through2.obj(function (file, enc, cb) {
         // something to report and has errors
         var error;
         if (file.htmlhint && !file.htmlhint.success) {
-			if (opts.suppress === true) {
-	            error = new PluginError('gulp-htmlhint', {
-	                message: 'HTMLHint failed.',
-	                showStack: false
-	            });
-			} else {
-	            var errorCount = file.htmlhint.errorCount;
-	            var plural = errorCount === 1 ? '' : 's';
-	            var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
-	            var messages = [msg].concat(getMessagesForFile(file).map(function(m){
-	                return m.message;
-	            }));
+            if (opts.suppress === true) {
+                error = new PluginError('gulp-htmlhint', {
+                    message: 'HTMLHint failed.',
+                    showStack: false
+                });
+            } else {
+                var errorCount = file.htmlhint.errorCount;
+                var plural = errorCount === 1 ? '' : 's';
+                var msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+                var messages = [msg].concat(getMessagesForFile(file).map(function (m) {
+                    return m.message;
+                }));
 
-	            error = new PluginError('gulp-htmlhint', {
-	                message: messages.join(os.EOL),
-	                showStack: false
-	            });
-			}
+                error = new PluginError('gulp-htmlhint', {
+                    message: messages.join(os.EOL),
+                    showStack: false
+                });
+            }
         }
         cb(error, file);
     });
 };
 
 module.exports = htmlhintPlugin;
-
-
