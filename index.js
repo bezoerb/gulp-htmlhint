@@ -143,7 +143,7 @@ htmlhintPlugin.addRule = function (rule) {
     return HTMLHint.addRule(rule);
 };
 
-htmlhintPlugin.reporter = function (customReporter) {
+htmlhintPlugin.reporter = function (customReporter, options) {
     'use strict';
     var reporter = defaultReporter;
 
@@ -166,7 +166,7 @@ htmlhintPlugin.reporter = function (customReporter) {
     return through2.obj(function (file, enc, cb) {
         // Only report if HTMLHint ran and errors were found
         if (file.htmlhint && !file.htmlhint.success) {
-            reporter(file);
+            reporter(file, file.htmlhint.messages, options);
         }
 
         cb(null, file);
