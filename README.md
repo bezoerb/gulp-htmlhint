@@ -91,7 +91,7 @@ __Plugin options:__
   gulp.src("./src/*.html")
 	  .pipe(htmlhint())
 	  .pipe(htmlhint.reporter("htmlhint-stylish"))
-	  .pipe(htmlhint.failReporter({ suppress: true })
+	  .pipe(htmlhint.failReporter({ suppress: true }))
   ```
 
 ## License
