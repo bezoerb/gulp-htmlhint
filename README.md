@@ -94,6 +94,10 @@ __Plugin options:__
 	  .pipe(htmlhint.failReporter({ suppress: true }))
   ```
 
+### Third party reporter
+
+[gulp-reporter](https://github.com/gucong3000/gulp-reporter) is used in a team project and fails only when the error belongs to the current author.
+
 ## License
 
 [MIT License](bezoerb.mit-license.org)
