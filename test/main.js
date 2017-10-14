@@ -225,10 +225,94 @@ describe('htmlhint.reporter', function () {
     });
 });
 
-describe('htmlhint.errorreporter', function () {
+describe('htmlhint.failOnError', function () {
     it('should throw an error when using on an invalid file', function (done) {
         var error = false;
         var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failOnError());
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+
+    it('should throw an error (from one file) when using more than one file', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/morethan16/*.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failOnError());
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+
+    it('should not show file errors if suppress option is explicitly set', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failOnError({
+                suppress: true
+            }));
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed.');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+});
+
+describe('htmlhint.failReporter - backward compatibility', function () {
+    it('should throw an error when using on an invalid file', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failReporter());
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+
+    it('should throw an error (from one file) when using more than one file', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/morethan16/*.html')
             .pipe(htmlhint())
             .pipe(htmlhint.failReporter());
 
@@ -257,6 +341,73 @@ describe('htmlhint.errorreporter', function () {
         stream.on('error', function (err) {
             error = true;
             gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed.');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+});
+
+describe('htmlhint.failAfterError', function () {
+    it('should throw an error when using on an invalid file', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failAfterError());
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+
+    it('should throw an error (from all files) when using more than one file', function (done) {
+        var error = false;
+        var stream = vfs.src(['test/fixtures/morethan16/test1.html', 'test/fixtures/morethan16/test2.html'])
+            .pipe(htmlhint())
+            .pipe(htmlhint.failAfterError());
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed. 4 errors overall:');
+            gutil.colors.stripColor(err.message).should.containEql('morethan16/test1.html');
+            gutil.colors.stripColor(err.message).should.containEql('morethan16/test2.html');
+            gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+            err.name.should.equal('Error');
+            done();
+        });
+
+        stream.once('end', function () {
+            /* eslint no-unused-expressions: 0 */
+            error.should.be.true;
+            done();
+        });
+    });
+
+    it('should not show file errors if suppress option is explicitly set', function (done) {
+        var error = false;
+        var stream = vfs.src('test/fixtures/invalid.html')
+            .pipe(htmlhint())
+            .pipe(htmlhint.failAfterError({
+                suppress: true
+            }));
+
+        stream.on('error', function (err) {
+            error = true;
+            gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed. 1 error overall.');
             err.name.should.equal('Error');
             done();
         });

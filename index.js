@@ -152,8 +152,10 @@ htmlhintPlugin.reporter = function (customReporter, options) {
     }
 
     if (typeof customReporter === 'string') {
-        if (customReporter === 'fail') {
-            return htmlhintPlugin.failReporter();
+        if (customReporter === 'fail' || customReporter === 'failOn') {
+            return htmlhintPlugin.failOnError();
+        } else if (customReporter === 'failAfter') {
+            return htmlhintPlugin.failAfterError();
         }
 
         reporter = require(customReporter);
@@ -173,7 +175,7 @@ htmlhintPlugin.reporter = function (customReporter, options) {
     });
 };
 
-htmlhintPlugin.failReporter = function (opts) {
+htmlhintPlugin.failOnError = function (opts) {
     'use strict';
     opts = opts || {};
     return through2.obj(function (file, enc, cb) {
@@ -202,5 +204,52 @@ htmlhintPlugin.failReporter = function (opts) {
         cb(error, file);
     });
 };
+
+htmlhintPlugin.failAfterError = function (opts) {
+    'use strict';
+    opts = opts || {};
+    var globalErrorCount = 0;
+    var globalErrorMessage = '';
+    return through2.obj(check, summarize);
+
+    function check(file, enc, cb) {
+        if (file.htmlhint && !file.htmlhint.success) {
+            if (opts.suppress === true) {
+                globalErrorCount += file.htmlhint.errorCount;
+            } else {
+                globalErrorCount += file.htmlhint.errorCount;
+                var plural = file.htmlhint.errorCount === 1 ? '' : 's';
+                var msg = c.cyan(file.htmlhint.errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+                var messages = [msg].concat(getMessagesForFile(file).map(function (m) {
+                    return m.message;
+                }));
+
+                globalErrorMessage += messages.join(os.EOL) + os.EOL;
+            }
+        }
+        cb(null, file);
+    }
+
+    function summarize(cb) {
+        if (!globalErrorCount) {
+            cb();
+            return;
+        }
+
+        var plural = globalErrorCount === 1 ? '' : 's';
+        var message = globalErrorMessage ?
+            c.cyan(globalErrorCount) + ' error' + plural + ' overall:' + os.EOL + globalErrorMessage :
+            c.cyan(globalErrorCount) + ' error' + plural + ' overall.';
+
+        var error = new PluginError('gulp-htmlhint', {
+            message: 'HTMLHint failed. ' + message,
+            showStack: false
+        });
+        cb(error);
+    }
+};
+
+// backward compatibility
+htmlhintPlugin.failReporter = htmlhintPlugin.failOnError;
 
 module.exports = htmlhintPlugin;
