@@ -64,7 +64,9 @@ gulp.src("./src/*.html")
 
 ### Fail reporter
 
-Use this reporter if you want your task to fail in case of a HTMLHint Error.
+#### failOnError
+
+Use this reporter if you want your task to fail in case of a HTMLHint Error (fails on first file).
 It also prints a summary of all errors in the first bad file.
 
 ```javascript
@@ -72,10 +74,23 @@ var htmlhint = require("gulp-htmlhint");
 
 gulp.src("./src/*.html")
 	.pipe(htmlhint())
-	.pipe(htmlhint.failReporter())
+	.pipe(htmlhint.failOnError())
 ```
 
-Optionally, you can pass the `htmlhint.failReporter` a config object
+#### failAfterError
+
+Use this reporter if you want your task to fail in case of a HTMLHint Error (collects statistics from all files and then fails).
+It also prints a summary of all errors in the first bad file.
+
+```javascript
+var htmlhint = require("gulp-htmlhint");
+
+gulp.src("./src/*.html")
+	.pipe(htmlhint())
+	.pipe(htmlhint.failAfterError())
+```
+
+Optionally, you can pass the a config object (works for both fail reporters)
 
 __Plugin options:__
 
@@ -91,7 +106,7 @@ __Plugin options:__
   gulp.src("./src/*.html")
 	  .pipe(htmlhint())
 	  .pipe(htmlhint.reporter("htmlhint-stylish"))
-	  .pipe(htmlhint.failReporter({ suppress: true }))
+	  .pipe(htmlhint.failOnError({ suppress: true }))
   ```
 
 ### Third party reporter
