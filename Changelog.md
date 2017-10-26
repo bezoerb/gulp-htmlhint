@@ -1,4 +1,15 @@
 
+1.0.0 / 2017-10-26
+==================
+
+  * Drop node <4 support
+  * feat(reporters): failAfterError and failOnError (#32)
+  * Add link for `gulp-reporter` (#30)
+  * Merge pull request #26 from Titiaiev/patch-1
+  * Update README.md
+  * Merge pull request #19 from appfeel/master
+  * Allow reporter to get options
+
 0.3.0 / 2015-07-18
 ==================
 
