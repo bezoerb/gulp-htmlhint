@@ -16,7 +16,8 @@
     "url": "git://github.com/bezoerb/gulp-htmlhint.git"
   },
   "scripts": {
-    "test": "xo && mocha test/*.js"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test": "xo && nyc mocha test/*.js"
   },
   "dependencies": {
     "gulp-util": "^3.0.0",
@@ -25,19 +26,20 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "htmlhint-stylish": "^1.0.0",
-    "jshint": "^2.6.3",
-    "mocha": "^2.2.1",
-    "should": "^8.1.1",
+    "coveralls": "^3.0.0",
+    "htmlhint-stylish": "^1.0.3",
+    "mocha": "4.0.1",
+    "nsp": "^2.8.1",
+    "nyc": "^11.2.1",
+    "should": "13.1.2",
     "vinyl-fs": "^2.3.1",
-    "xo": "^0.12.1"
+    "xo": "0.18.2"
   },
   "xo": {
-    "space": 4
+    "space": 2
   },
   "engines": {
-    "node": ">=0.8.0",
-    "npm": ">=1.2.10"
+    "node": ">=4"
   },
   "licenses": [
     {
