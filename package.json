@@ -44,7 +44,7 @@
     "space": 2
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "licenses": [
     {
