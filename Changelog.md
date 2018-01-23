@@ -1,4 +1,4 @@
-Unreleased
+2.0.0 / 2018-01-23
 ==================
 
   * Drop node <6 support
