@@ -3,12 +3,11 @@
 const fs = require('fs');
 const path = require('path');
 const should = require('should');
-const gutil = require('gulp-util');
+const stripAnsi = require('strip-ansi');
 const vfs = require('vinyl-fs');
+const File = require('vinyl');
 const HTMLHint = require('htmlhint').HTMLHint;
 const htmlhint = require('../');
-
-const File = gutil.File;
 
 const getFile = function (filePath) {
   filePath = 'test/' + filePath;
@@ -233,7 +232,7 @@ describe('htmlhint.failOnError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -253,7 +252,7 @@ describe('htmlhint.failOnError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -275,7 +274,7 @@ describe('htmlhint.failOnError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed.');
+      stripAnsi(err.message).should.containEql('HTMLHint failed.');
       err.name.should.equal('Error');
       done();
     });
@@ -297,7 +296,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -317,7 +316,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -339,7 +338,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed.');
+      stripAnsi(err.message).should.containEql('HTMLHint failed.');
       err.name.should.equal('Error');
       done();
     });
@@ -361,7 +360,7 @@ describe('htmlhint.failAfterError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -381,10 +380,10 @@ describe('htmlhint.failAfterError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed. 4 errors overall:');
-      gutil.colors.stripColor(err.message).should.containEql('morethan16/test1.html');
-      gutil.colors.stripColor(err.message).should.containEql('morethan16/test2.html');
-      gutil.colors.stripColor(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+      stripAnsi(err.message).should.containEql('HTMLHint failed. 4 errors overall:');
+      stripAnsi(err.message).should.containEql('morethan16/test1.html');
+      stripAnsi(err.message).should.containEql('morethan16/test2.html');
+      stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
@@ -406,7 +405,7 @@ describe('htmlhint.failAfterError', () => {
 
     stream.on('error', err => {
       error = true;
-      gutil.colors.stripColor(err.message).should.containEql('HTMLHint failed. 1 error overall.');
+      stripAnsi(err.message).should.containEql('HTMLHint failed. 1 error overall.');
       err.name.should.equal('Error');
       done();
     });

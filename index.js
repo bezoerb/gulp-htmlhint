@@ -1,13 +1,12 @@
 const fs = require('fs');
 const os = require('os');
+const beep = require('beeper');
+const c = require('ansi-colors');
+const flog = require('fancy-log');
 const through2 = require('through2');
-const gutil = require('gulp-util');
+const PluginError = require('plugin-error');
 const stripJsonComments = require('strip-json-comments');
-const PluginError = require('gulp-util').PluginError;
 const HTMLHint = require('htmlhint').HTMLHint;
-
-const beep = gutil.beep;
-const c = gutil.colors;
 
 const formatOutput = function (report, file, options) {
   'use strict';
@@ -130,11 +129,11 @@ const defaultReporter = function (file) {
 
   beep();
 
-  gutil.log(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
+  flog(c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path));
 
   getMessagesForFile(file).forEach(data => {
-    gutil.log(data.message);
-    gutil.log(data.evidence);
+    flog(data.message);
+    flog(data.evidence);
   });
 };
 
