@@ -38,7 +38,7 @@ const formatOutput = function (report, file, options) {
   return output;
 };
 
-const htmlhintPlugin = function (options) {
+const htmlhintPlugin = function (options, customRules) {
   'use strict';
 
   const ruleset = {};
@@ -82,7 +82,20 @@ const htmlhintPlugin = function (options) {
       delete ruleset[rule];
     }
   }
-
+	
+	// Add the defined custom rules
+	// This will not require adding the costume rule id to the .htmlhintrc file
+	if(customRules !== null && customRules instanceof Array && customRules.length > 0){
+		for(const rule of customRules){
+			if(typeof rule === 'object'){
+				HTMLHint.addRule(rule);
+				if(rule.hasOwnProperty('id')){
+					ruleset[rule.id] = true;
+				}
+			}
+		}
+	}
+	
   return through2.obj((file, enc, cb) => {
     const report = HTMLHint.verify(file.contents.toString(), ruleset);
 
