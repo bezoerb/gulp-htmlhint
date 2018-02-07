@@ -381,8 +381,8 @@ describe('htmlhint.failAfterError', () => {
     stream.on('error', err => {
       error = true;
       stripAnsi(err.message).should.containEql('HTMLHint failed. 4 errors overall:');
-      stripAnsi(err.message).should.containEql('morethan16/test1.html');
-      stripAnsi(err.message).should.containEql('morethan16/test2.html');
+      stripAnsi(err.message).should.containEql(path.normalize('morethan16/test1.html'));
+      stripAnsi(err.message).should.containEql(path.normalize('morethan16/test2.html'));
       stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();

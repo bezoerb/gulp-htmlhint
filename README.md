@@ -24,7 +24,7 @@ gulp.src("./src/*.html")
 
 ## API
 
-### htmlhint(options [, customRules])
+### htmlhint([options [, customRules]])
 
 #### options
 See all rules here: [https://github.com/yaniswang/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
@@ -50,9 +50,10 @@ gulp.src("./src/*.html")
 	.pipe(htmlhint('.htmlhintrc'))
 ```
 
-### customRules
+#### customRules
 
 Type: `Array` _Optional_
+Default value: `null`
 
 Array that contains all user defined custom rules. Adding a custom rule with this param doesn't require to add it's id in the `htmlhintrc` file.
 All defined custom rules inside this array should be a valid object and looks like this:
@@ -84,6 +85,13 @@ customRules.push({
 gulp.src("./src/*.html")
 	.pipe(htmlhint('.htmlhintrc', customRules))
 ```
+
+Note: You can call `htmlhint` function with 4 ways:
+
+- Without params (task use standard options).
+- With `options` param alone.
+- With `customRules` param alone (task will only use custom rules options).
+- With `options` and `customRules` params defined.
 
 ## Reporters
 
