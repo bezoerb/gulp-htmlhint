@@ -24,13 +24,14 @@ gulp.src("./src/*.html")
 
 ## API
 
-### htmlhint(options)
+### htmlhint([options [, customRules]])
 
+#### options
 See all rules here: [https://github.com/yaniswang/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
 
 If options is empty, task use standard options.
 
-#### options.htmlhintrc
+##### options.htmlhintrc
 Type: `String`
 Default value: `null`
 
@@ -49,6 +50,48 @@ gulp.src("./src/*.html")
 	.pipe(htmlhint('.htmlhintrc'))
 ```
 
+#### customRules
+
+Type: `Array` _Optional_
+Default value: `null`
+
+Array that contains all user defined custom rules. Adding a custom rule with this param doesn't require to add it's id in the `htmlhintrc` file.
+All defined custom rules inside this array should be a valid object and looks like this:
+
+```javascript
+{
+		id: 'my-custom-rule',
+		description: 'Custom rule definition',
+		init: function(parser, reporter){
+				//Code goes here
+		}
+}
+```
+
+Here is an example:
+
+```javascript
+var htmlhint = require("gulp-htmlhint");
+
+var customRules = [];
+customRules.push({
+		id: 'my-custom-rule',
+		description: 'Custom rule definition',
+		init: function(parser, reporter){
+				//Code goes here
+		}
+});
+
+gulp.src("./src/*.html")
+	.pipe(htmlhint('.htmlhintrc', customRules))
+```
+
+Note: You can call `htmlhint` function with 4 ways:
+
+- Without params (task use standard options).
+- With `options` param alone.
+- With `customRules` param alone (task will only use custom rules options).
+- With `options` and `customRules` params defined.
 
 ## Reporters
 

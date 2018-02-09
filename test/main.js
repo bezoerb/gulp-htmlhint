@@ -19,6 +19,38 @@ const getFile = function (filePath) {
   });
 };
 
+// User defined custom rule for test
+const customRules = [];
+customRules.push({
+  id: 'require-some-tag',
+  description: 'Require the presence of some-tag as the first element in files and not duplicated.',
+  init(parser, reporter) {
+    const self = this;
+    let someTagOccurrences = 0;
+    let someTagIsFirstEl = false;
+    let iteration = 0;
+    function onTagStart(event) {
+      const tagName = event.tagName.toLowerCase();
+      if (tagName === 'some-tag' && iteration === 0) {
+        someTagIsFirstEl = true;
+        someTagOccurrences++;
+      } else if (tagName === 'some-tag' && iteration > 0) {
+        someTagOccurrences++;
+      }
+      if (!someTagIsFirstEl) {
+        reporter.error('The tag <some-tag> must be present as first element.', event.line, event.col, self, event.raw);
+        parser.removeListener('tagstart', onTagStart);
+      }
+      if (someTagOccurrences > 1) {
+        reporter.error('The tag <some-tag> must be present only once.', event.line, event.col, self, event.raw);
+        parser.removeListener('tagstart', onTagStart);
+      }
+      iteration++;
+    }
+    parser.addListener('tagstart', onTagStart);
+  }
+});
+
 describe('gulp-htmlhint', () => {
   it('should pass valid file', done => {
     let valid = 0;
@@ -181,10 +213,10 @@ describe('htmlhint.reporter', () => {
     let a = 0;
 
     const stream = vfs.src('test/fixtures/morethan16/*.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.reporter(() => {
-              a++;
-            }));
+			.pipe(htmlhint())
+			.pipe(htmlhint.reporter(() => {
+  a++;
+}));
 
     stream.on('data', () => {
     });
@@ -199,8 +231,8 @@ describe('htmlhint.reporter', () => {
     let valid = 0;
 
     const stream = vfs.src('test/fixtures/valid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.reporter('htmlhint-stylish'));
+			.pipe(htmlhint())
+			.pipe(htmlhint.reporter('htmlhint-stylish'));
 
     stream.on('error', err => {
       should.not.exist(err);
@@ -208,7 +240,7 @@ describe('htmlhint.reporter', () => {
 
     stream.on('data', file => {
       should.exist(file);
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       file.htmlhint.success.should.be.true;
       should.exist(file.path);
       should.exist(file.relative);
@@ -227,8 +259,8 @@ describe('htmlhint.failOnError', () => {
   it('should throw an error when using on an invalid file', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failOnError());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failOnError());
 
     stream.on('error', err => {
       error = true;
@@ -238,7 +270,7 @@ describe('htmlhint.failOnError', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -247,8 +279,8 @@ describe('htmlhint.failOnError', () => {
   it('should throw an error (from one file) when using more than one file', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/morethan16/*.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failOnError());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failOnError());
 
     stream.on('error', err => {
       error = true;
@@ -258,7 +290,7 @@ describe('htmlhint.failOnError', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -267,10 +299,10 @@ describe('htmlhint.failOnError', () => {
   it('should not show file errors if suppress option is explicitly set', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failOnError({
-              suppress: true
-            }));
+			.pipe(htmlhint())
+			.pipe(htmlhint.failOnError({
+  suppress: true
+}));
 
     stream.on('error', err => {
       error = true;
@@ -279,8 +311,28 @@ describe('htmlhint.failOnError', () => {
       done();
     });
 
+    it('should throw an error when using on an invalid file', done => {
+      let error = false;
+      const stream = vfs.src('test/fixtures/invalid.html')
+				.pipe(htmlhint())
+				.pipe(htmlhint.failOnError());
+
+      stream.on('error', err => {
+        error = true;
+        stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
+        err.name.should.equal('Error');
+        done();
+      });
+
+      stream.once('end', () => {
+				/* eslint no-unused-expressions: 0 */
+        error.should.be.true;
+        done();
+      });
+    });
+
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -291,8 +343,8 @@ describe('htmlhint.failReporter - backward compatibility', () => {
   it('should throw an error when using on an invalid file', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failReporter());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failReporter());
 
     stream.on('error', err => {
       error = true;
@@ -302,7 +354,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -311,8 +363,8 @@ describe('htmlhint.failReporter - backward compatibility', () => {
   it('should throw an error (from one file) when using more than one file', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/morethan16/*.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failReporter());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failReporter());
 
     stream.on('error', err => {
       error = true;
@@ -322,7 +374,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -331,10 +383,10 @@ describe('htmlhint.failReporter - backward compatibility', () => {
   it('should not show file errors if suppress option is explicitly set', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failReporter({
-              suppress: true
-            }));
+			.pipe(htmlhint())
+			.pipe(htmlhint.failReporter({
+  suppress: true
+}));
 
     stream.on('error', err => {
       error = true;
@@ -344,7 +396,7 @@ describe('htmlhint.failReporter - backward compatibility', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -355,8 +407,8 @@ describe('htmlhint.failAfterError', () => {
   it('should throw an error when using on an invalid file', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failAfterError());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failAfterError());
 
     stream.on('error', err => {
       error = true;
@@ -366,7 +418,7 @@ describe('htmlhint.failAfterError', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -375,21 +427,21 @@ describe('htmlhint.failAfterError', () => {
   it('should throw an error (from all files) when using more than one file', done => {
     let error = false;
     const stream = vfs.src(['test/fixtures/morethan16/test1.html', 'test/fixtures/morethan16/test2.html'])
-            .pipe(htmlhint())
-            .pipe(htmlhint.failAfterError());
+			.pipe(htmlhint())
+			.pipe(htmlhint.failAfterError());
 
     stream.on('error', err => {
       error = true;
       stripAnsi(err.message).should.containEql('HTMLHint failed. 4 errors overall:');
-      stripAnsi(err.message).should.containEql('morethan16/test1.html');
-      stripAnsi(err.message).should.containEql('morethan16/test2.html');
+      stripAnsi(err.message).should.containEql(path.normalize('morethan16/test1.html'));
+      stripAnsi(err.message).should.containEql(path.normalize('morethan16/test2.html'));
       stripAnsi(err.message).should.containEql('[L9:C1] Tag must be paired, missing: [ </h1> ], start tag match failed [ <h1> ]');
       err.name.should.equal('Error');
       done();
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });
@@ -398,10 +450,10 @@ describe('htmlhint.failAfterError', () => {
   it('should not show file errors if suppress option is explicitly set', done => {
     let error = false;
     const stream = vfs.src('test/fixtures/invalid.html')
-            .pipe(htmlhint())
-            .pipe(htmlhint.failAfterError({
-              suppress: true
-            }));
+			.pipe(htmlhint())
+			.pipe(htmlhint.failAfterError({
+  suppress: true
+}));
 
     stream.on('error', err => {
       error = true;
@@ -411,7 +463,93 @@ describe('htmlhint.failAfterError', () => {
     });
 
     stream.once('end', () => {
-            /* eslint no-unused-expressions: 0 */
+			/* eslint no-unused-expressions: 0 */
+      error.should.be.true;
+      done();
+    });
+  });
+});
+
+describe('customRules with htmlhintrc', () => {
+  it('should throw an error when some-tag is not the first element', done => {
+    let error = false;
+    const stream = vfs.src('test/fixtures/test-custom-rule/invalid-custom-rule-2.html')
+			.pipe(htmlhint('test/fixtures/test-custom-rule/htmlhintrc.json', customRules))
+			.pipe(htmlhint.failAfterError());
+
+    stream.on('error', err => {
+      error = true;
+      stripAnsi(err.message).should.containEql('[L1:C1] The tag <some-tag> must be present as first element.');
+      stripAnsi(err.message).should.containEql('[L5:C2] Tag must be paired, missing: [ </h1> ]');
+      err.name.should.equal('Error');
+      done();
+    });
+
+    stream.once('end', () => {
+			/* eslint no-unused-expressions: 0 */
+      error.should.be.true;
+      done();
+    });
+  });
+
+  it('should throw an error when some-tag is defined more than once', done => {
+    let error = false;
+    const stream = vfs.src('test/fixtures/test-custom-rule/invalid-custom-rule.html')
+			.pipe(htmlhint('test/fixtures/test-custom-rule/htmlhintrc.json', customRules))
+			.pipe(htmlhint.failAfterError());
+
+    stream.on('error', err => {
+      error = true;
+      stripAnsi(err.message).should.containEql('[L4:C3] The tag <some-tag> must be present only once.');
+      stripAnsi(err.message).should.containEql('[L6:C3] Tag must be paired, missing: [ </h1> ]');
+      err.name.should.equal('Error');
+      done();
+    });
+
+    stream.once('end', () => {
+			/* eslint no-unused-expressions: 0 */
+      error.should.be.true;
+      done();
+    });
+  });
+});
+
+describe('customRules', () => {
+  it('should throw an error when some-tag is not the first element', done => {
+    let error = false;
+    const stream = vfs.src('test/fixtures/test-custom-rule/invalid-custom-rule-2.html')
+			.pipe(htmlhint(customRules))
+			.pipe(htmlhint.failAfterError());
+
+    stream.on('error', err => {
+      error = true;
+      stripAnsi(err.message).should.containEql('[L1:C1] The tag <some-tag> must be present as first element.');
+      err.name.should.equal('Error');
+      done();
+    });
+
+    stream.once('end', () => {
+			/* eslint no-unused-expressions: 0 */
+      error.should.be.true;
+      done();
+    });
+  });
+
+  it('should throw an error when some-tag is defined more than once', done => {
+    let error = false;
+    const stream = vfs.src('test/fixtures/test-custom-rule/invalid-custom-rule.html')
+			.pipe(htmlhint('test/htmlhintrc.json', customRules))
+			.pipe(htmlhint.failAfterError());
+
+    stream.on('error', err => {
+      error = true;
+      stripAnsi(err.message).should.containEql('[L4:C3] The tag <some-tag> must be present only once.');
+      err.name.should.equal('Error');
+      done();
+    });
+
+    stream.once('end', () => {
+			/* eslint no-unused-expressions: 0 */
       error.should.be.true;
       done();
     });

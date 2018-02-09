@@ -18,7 +18,7 @@ const formatOutput = function (report, file, options) {
 
   const filePath = (file.path || 'stdin');
 
-    // Handle errors
+  // Handle errors
   const messages = report.filter(err => {
     return err;
   }).map(err => {
@@ -38,55 +38,76 @@ const formatOutput = function (report, file, options) {
   return output;
 };
 
-const htmlhintPlugin = function (options) {
+const htmlhintPlugin = function (options, customRules) {
   'use strict';
 
   const ruleset = {};
+
+  if (!customRules && options && Array.isArray(options) && options.length > 0) {
+    customRules = options;
+    options = {};
+  }
 
   if (!options) {
     options = {};
   }
 
-    // Read Htmlhint options from a specified htmlhintrc file.
+  // Read Htmlhint options from a specified htmlhintrc file.
   if (typeof options === 'string') {
-        // Don't catch readFile errors, let them bubble up
+    // Don't catch readFile errors, let them bubble up
     options = {
       htmlhintrc: './' + options
     };
-  }
 
     // If necessary check for required param(s), e.g. options hash, etc.
     // read config file for htmlhint if available
-  if (options.htmlhintrc) {
-    try {
-      const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
-      options = JSON.parse(stripJsonComments(externalOptions));
-    } catch (err) {
-      throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
+    if (options.htmlhintrc) {
+      try {
+        const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
+        options = JSON.parse(stripJsonComments(externalOptions));
+      } catch (err) {
+        throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
+      }
     }
   }
 
+  if (Object.keys(options).length > 0) {
     // Build a list of all available rules
-  for (const key in HTMLHint.defaultRuleset) {
-    if (HTMLHint.defaultRuleset.hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
-      ruleset[key] = 1;
+    for (const key in HTMLHint.defaultRuleset) {
+      if (HTMLHint.defaultRuleset.hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
+        ruleset[key] = 1;
+      }
     }
-  }
 
     // Normalize htmlhint options
-    // htmllint only checks for rulekey, so remove rule if set to false
-  for (const rule in options) {
-    if (options[rule]) {
-      ruleset[rule] = options[rule];
-    } else {
-      delete ruleset[rule];
+    // htmlhint only checks for rulekey, so remove rule if set to false
+    for (const rule in options) {
+      if (options[rule]) {
+        ruleset[rule] = options[rule];
+      } else {
+        delete ruleset[rule];
+      }
+    }
+  }
+
+  // Add the defined custom rules
+  // This will not require adding the costume rule id to the .htmlhintrc file
+  if (customRules !== null && Array.isArray(customRules) && customRules.length > 0) {
+    const has = Object.prototype.hasOwnProperty;
+    for (const rule of customRules) {
+      if (typeof rule === 'object') {
+        HTMLHint.addRule(rule);
+        if (has.call(rule, 'id')) {
+          ruleset[rule.id] = true;
+        }
+      }
     }
   }
 
   return through2.obj((file, enc, cb) => {
     const report = HTMLHint.verify(file.contents.toString(), ruleset);
 
-        // Send status down-stream
+  // Send status down-stream
     file.htmlhint = formatOutput(report, file, options);
     cb(null, file);
   });
@@ -165,7 +186,7 @@ htmlhintPlugin.reporter = function (customReporter, options) {
   }
 
   return through2.obj((file, enc, cb) => {
-        // Only report if HTMLHint ran and errors were found
+    // Only report if HTMLHint ran and errors were found
     if (file.htmlhint && !file.htmlhint.success) {
       reporter(file, file.htmlhint.messages, options);
     }
@@ -178,7 +199,7 @@ htmlhintPlugin.failOnError = function (opts) {
   'use strict';
   opts = opts || {};
   return through2.obj((file, enc, cb) => {
-        // Something to report and has errors
+    // Something to report and has errors
     let error;
     if (file.htmlhint && !file.htmlhint.success) {
       if (opts.suppress === true) {
@@ -237,8 +258,8 @@ htmlhintPlugin.failAfterError = function (opts) {
 
     const plural = globalErrorCount === 1 ? '' : 's';
     const message = globalErrorMessage ?
-            c.cyan(globalErrorCount) + ' error' + plural + ' overall:' + os.EOL + globalErrorMessage :
-            c.cyan(globalErrorCount) + ' error' + plural + ' overall.';
+      c.cyan(globalErrorCount) + ' error' + plural + ' overall:' + os.EOL + globalErrorMessage :
+      c.cyan(globalErrorCount) + ' error' + plural + ' overall.';
 
     const error = new PluginError('gulp-htmlhint', {
       message: 'HTMLHint failed. ' + message,
