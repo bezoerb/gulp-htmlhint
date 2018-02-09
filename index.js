@@ -21,12 +21,12 @@ const formatOutput = function (report, file, options) {
   // Handle errors
   const messages = report.filter(err => {
     return err;
-}).map(err => {
+  }).map(err => {
     return {
       file: filePath,
       error: err
     };
-});
+  });
 
   const output = {
     errorCount: messages.length,
@@ -43,7 +43,7 @@ const htmlhintPlugin = function (options, customRules) {
 
   const ruleset = {};
 
-  if(customRules == null && options && options instanceof Array && options.length > 0){
+  if (!customRules && options && Array.isArray(options) && options.length > 0) {
     customRules = options;
     options = {};
   }
@@ -71,7 +71,7 @@ const htmlhintPlugin = function (options, customRules) {
     }
   }
 
-  if(Object.keys(options).length > 0){
+  if (Object.keys(options).length > 0) {
     // Build a list of all available rules
     for (const key in HTMLHint.defaultRuleset) {
       if (HTMLHint.defaultRuleset.hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
@@ -92,11 +92,12 @@ const htmlhintPlugin = function (options, customRules) {
 
   // Add the defined custom rules
   // This will not require adding the costume rule id to the .htmlhintrc file
-  if(customRules !== null && customRules instanceof Array && customRules.length > 0){
-    for(const rule of customRules){
-      if(typeof rule === 'object'){
+  if (customRules !== null && Array.isArray(customRules) && customRules.length > 0) {
+    const has = Object.prototype.hasOwnProperty;
+    for (const rule of customRules) {
+      if (typeof rule === 'object') {
         HTMLHint.addRule(rule);
-        if(rule.hasOwnProperty('id')){
+        if (has.call(rule, 'id')) {
           ruleset[rule.id] = true;
         }
       }
@@ -107,39 +108,39 @@ const htmlhintPlugin = function (options, customRules) {
     const report = HTMLHint.verify(file.contents.toString(), ruleset);
 
   // Send status down-stream
-  file.htmlhint = formatOutput(report, file, options);
-  cb(null, file);
-});
+    file.htmlhint = formatOutput(report, file, options);
+    cb(null, file);
+  });
 };
 
 function getMessagesForFile(file) {
   'use strict';
   return file.htmlhint.messages.map(msg => {
     const message = msg.error;
-  let evidence = message.evidence;
-  const line = message.line;
-  const col = message.col;
-  let detail;
+    let evidence = message.evidence;
+    const line = message.line;
+    const col = message.col;
+    let detail;
 
-  if (line) {
-    detail = c.yellow('L' + line) + c.red(':') + c.yellow('C' + col);
-  } else {
-    detail = c.yellow('GENERAL');
-  }
+    if (line) {
+      detail = c.yellow('L' + line) + c.red(':') + c.yellow('C' + col);
+    } else {
+      detail = c.yellow('GENERAL');
+    }
 
-  if (col === 0) {
-    evidence = c.red('?') + evidence;
-  } else if (col > evidence.length) {
-    evidence = c.red(evidence + ' ');
-  } else {
-    evidence = evidence.slice(0, col - 1) + c.red(evidence[col - 1]) + evidence.slice(col);
-  }
+    if (col === 0) {
+      evidence = c.red('?') + evidence;
+    } else if (col > evidence.length) {
+      evidence = c.red(evidence + ' ');
+    } else {
+      evidence = evidence.slice(0, col - 1) + c.red(evidence[col - 1]) + evidence.slice(col);
+    }
 
-  return {
-    message: c.red('[') + detail + c.red(']') + c.yellow(' ' + message.message) + ' (' + message.rule.id + ')',
-    evidence
-  };
-});
+    return {
+      message: c.red('[') + detail + c.red(']') + c.yellow(' ' + message.message) + ' (' + message.rule.id + ')',
+      evidence
+    };
+  });
 }
 
 const defaultReporter = function (file) {
@@ -153,8 +154,8 @@ const defaultReporter = function (file) {
 
   getMessagesForFile(file).forEach(data => {
     flog(data.message);
-  flog(data.evidence);
-});
+    flog(data.evidence);
+  });
 };
 
 htmlhintPlugin.addRule = function (rule) {
@@ -187,11 +188,11 @@ htmlhintPlugin.reporter = function (customReporter, options) {
   return through2.obj((file, enc, cb) => {
     // Only report if HTMLHint ran and errors were found
     if (file.htmlhint && !file.htmlhint.success) {
-    reporter(file, file.htmlhint.messages, options);
-  }
+      reporter(file, file.htmlhint.messages, options);
+    }
 
-  cb(null, file);
-});
+    cb(null, file);
+  });
 };
 
 htmlhintPlugin.failOnError = function (opts) {
@@ -200,28 +201,28 @@ htmlhintPlugin.failOnError = function (opts) {
   return through2.obj((file, enc, cb) => {
     // Something to report and has errors
     let error;
-  if (file.htmlhint && !file.htmlhint.success) {
-    if (opts.suppress === true) {
-      error = new PluginError('gulp-htmlhint', {
-        message: 'HTMLHint failed.',
-        showStack: false
-      });
-    } else {
-      const errorCount = file.htmlhint.errorCount;
-      const plural = errorCount === 1 ? '' : 's';
-      const msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
-      const messages = [msg].concat(getMessagesForFile(file).map(m => {
-        return m.message;
-    }));
+    if (file.htmlhint && !file.htmlhint.success) {
+      if (opts.suppress === true) {
+        error = new PluginError('gulp-htmlhint', {
+          message: 'HTMLHint failed.',
+          showStack: false
+        });
+      } else {
+        const errorCount = file.htmlhint.errorCount;
+        const plural = errorCount === 1 ? '' : 's';
+        const msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+        const messages = [msg].concat(getMessagesForFile(file).map(m => {
+          return m.message;
+        }));
 
-      error = new PluginError('gulp-htmlhint', {
-        message: messages.join(os.EOL),
-        showStack: false
-      });
+        error = new PluginError('gulp-htmlhint', {
+          message: messages.join(os.EOL),
+          showStack: false
+        });
+      }
     }
-  }
-  cb(error, file);
-});
+    cb(error, file);
+  });
 };
 
 htmlhintPlugin.failAfterError = function (opts) {
@@ -241,7 +242,7 @@ htmlhintPlugin.failAfterError = function (opts) {
         const msg = c.cyan(file.htmlhint.errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
         const messages = [msg].concat(getMessagesForFile(file).map(m => {
           return m.message;
-      }));
+        }));
 
         globalErrorMessage += messages.join(os.EOL) + os.EOL;
       }
