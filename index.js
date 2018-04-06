@@ -58,18 +58,18 @@ const htmlhintPlugin = function (options, customRules) {
     options = {
       htmlhintrc: './' + options
     };
-	}
+  }
 
 	// If necessary check for required param(s), e.g. options hash, etc.
 	// read config file for htmlhint if available
-	if (options.htmlhintrc) {
-		try {
-			const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
-			options = JSON.parse(stripJsonComments(externalOptions));
-		} catch (err) {
-			throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
-		}
-	}
+  if (options.htmlhintrc) {
+    try {
+      const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
+      options = JSON.parse(stripJsonComments(externalOptions));
+    } catch (err) {
+      throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
+    }
+  }
 
   if (Object.keys(options).length > 0) {
     // Build a list of all available rules
