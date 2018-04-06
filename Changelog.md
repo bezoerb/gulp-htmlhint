@@ -1,4 +1,9 @@
 
+v2.1.1 / 2018-04-06
+==================
+
+  * Fix issue in specifying htmlhintrc in options. [#39]
+
 v2.1.0 / 2018-02-09
 ===================
 
