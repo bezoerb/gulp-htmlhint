@@ -1,4 +1,10 @@
 
+v2.1.2 / 2018-09-10
+===================
+
+  * Bump dependencies
+  * Updated htmlhint dependency (#42)
+
 v2.1.1 / 2018-04-06
 ==================
 
