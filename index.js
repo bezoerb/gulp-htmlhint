@@ -6,7 +6,7 @@ const flog = require('fancy-log');
 const through2 = require('through2');
 const PluginError = require('plugin-error');
 const stripJsonComments = require('strip-json-comments');
-const HTMLHint = require('htmlhint').HTMLHint;
+const {HTMLHint} = require('htmlhint');
 
 const formatOutput = function (report, file, options) {
   'use strict';
@@ -60,13 +60,13 @@ const htmlhintPlugin = function (options, customRules) {
     };
   }
 
-	// If necessary check for required param(s), e.g. options hash, etc.
-	// read config file for htmlhint if available
+  // If necessary check for required param(s), e.g. options hash, etc.
+  // read config file for htmlhint if available
   if (options.htmlhintrc) {
     try {
       const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
       options = JSON.parse(stripJsonComments(externalOptions));
-    } catch (err) {
+    } catch (error) {
       throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
     }
   }
@@ -107,7 +107,7 @@ const htmlhintPlugin = function (options, customRules) {
   return through2.obj((file, enc, cb) => {
     const report = HTMLHint.verify(file.contents.toString(), ruleset);
 
-  // Send status down-stream
+    // Send status down-stream
     file.htmlhint = formatOutput(report, file, options);
     cb(null, file);
   });
@@ -116,10 +116,9 @@ const htmlhintPlugin = function (options, customRules) {
 function getMessagesForFile(file) {
   'use strict';
   return file.htmlhint.messages.map(msg => {
-    const message = msg.error;
-    let evidence = message.evidence;
-    const line = message.line;
-    const col = message.col;
+    const {error: message} = msg;
+    let {evidence} = message;
+    const {line, col} = message;
     let detail;
 
     if (line) {
@@ -145,7 +144,7 @@ function getMessagesForFile(file) {
 
 const defaultReporter = function (file) {
   'use strict';
-  const errorCount = file.htmlhint.errorCount;
+  const {errorCount} = file.htmlhint;
   const plural = errorCount === 1 ? '' : 's';
 
   beep();
@@ -174,7 +173,8 @@ htmlhintPlugin.reporter = function (customReporter, options) {
   if (typeof customReporter === 'string') {
     if (customReporter === 'fail' || customReporter === 'failOn') {
       return htmlhintPlugin.failOnError();
-    } else if (customReporter === 'failAfter') {
+    }
+    if (customReporter === 'failAfter') {
       return htmlhintPlugin.failAfterError();
     }
 
@@ -208,7 +208,7 @@ htmlhintPlugin.failOnError = function (opts) {
           showStack: false
         });
       } else {
-        const errorCount = file.htmlhint.errorCount;
+        const {errorCount} = file.htmlhint;
         const plural = errorCount === 1 ? '' : 's';
         const msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
         const messages = [msg].concat(getMessagesForFile(file).map(m => {
