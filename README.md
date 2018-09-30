@@ -27,7 +27,7 @@ gulp.src("./src/*.html")
 ### htmlhint([options [, customRules]])
 
 #### options
-See all rules here: [https://github.com/yaniswang/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
+See all rules here: [https://github.com/HTMLHint/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
 
 If options is empty, task use standard options.
 
@@ -163,7 +163,7 @@ __Plugin options:__
 [npm-url]: https://npmjs.org/package/gulp-htmlhint
 [npm-image]: https://badge.fury.io/js/gulp-htmlhint.svg
 
-[travis-url]: http://travis-ci.org/bezoerb/gulp-htmlhint
+[travis-url]: https://travis-ci.org/bezoerb/gulp-htmlhint
 [travis-image]: https://secure.travis-ci.org/bezoerb/gulp-htmlhint.svg?branch=master
 
 [depstat-url]: https://david-dm.org/bezoerb/gulp-htmlhint
