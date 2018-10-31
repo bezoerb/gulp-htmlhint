@@ -29,17 +29,17 @@ gulp.src("./src/*.html")
 #### options
 See all rules here: [https://github.com/HTMLHint/HTMLHint/wiki/Rules](https://github.com/yaniswang/HTMLHint/wiki/Rules)
 
-If options is empty, task use standard options.
+If `options` is empty, the task will use standard options.
 
 ##### options.htmlhintrc
-Type: `String`
+Type: `String`<br>
 Default value: `null`
 
 If this filename is specified, options and globals defined there will be used. Task and target options override the options within the `htmlhintrc` file. The `htmlhintrc` file must be valid JSON and looks something like this:
 
 ```json
 {
-  "tag-pair": true,
+  "tag-pair": true
 }
 ```
 
@@ -52,11 +52,11 @@ gulp.src("./src/*.html")
 
 #### customRules
 
-Type: `Array` _Optional_
+Type: `Array` _Optional_<br>
 Default value: `null`
 
-Array that contains all user defined custom rules. Adding a custom rule with this param doesn't require to add it's id in the `htmlhintrc` file.
-All defined custom rules inside this array should be a valid object and looks like this:
+Array that contains all user-defined custom rules. Rules added to this param need not exist in the `htmlhintrc` file.
+All rules inside this array should be valid objects and look like this:
 
 ```javascript
 {
@@ -86,12 +86,12 @@ gulp.src("./src/*.html")
 	.pipe(htmlhint('.htmlhintrc', customRules))
 ```
 
-Note: You can call `htmlhint` function with 4 ways:
+Note: You can call `htmlhint` function four different ways:
 
-- Without params (task use standard options).
+- Without params (task will use standard options).
 - With `options` param alone.
 - With `customRules` param alone (task will only use custom rules options).
-- With `options` and `customRules` params defined.
+- With both `options` and `customRules` params defined.
 
 ## Reporters
 
@@ -105,11 +105,11 @@ gulp.src("./src/*.html")
 ```
 
 
-### Fail reporter
+### Fail reporters
 
 #### failOnError
 
-Use this reporter if you want your task to fail in case of a HTMLHint Error (fails on first file).
+Use this reporter if you want your task to fail on the first file that triggers an HTMLHint Error.
 It also prints a summary of all errors in the first bad file.
 
 ```javascript
@@ -122,7 +122,7 @@ gulp.src("./src/*.html")
 
 #### failAfterError
 
-Use this reporter if you want your task to fail in case of a HTMLHint Error (collects statistics from all files and then fails).
+Use this reporter if you want to collect statistics from all files before failing.
 It also prints a summary of all errors in the first bad file.
 
 ```javascript
@@ -133,13 +133,15 @@ gulp.src("./src/*.html")
 	.pipe(htmlhint.failAfterError())
 ```
 
-Optionally, you can pass the a config object (works for both fail reporters)
+#### Reporter options
 
-__Plugin options:__
+Optionally, you can pass a config object to either fail reporter.
 
-- *suppress*
+##### suppress
+Type: `Boolean`<br>
+Default value: `false`
 
-  When set to `true`, it does not display file errors on failure.
+  When set to `true`, errors are not displayed on failure.
   Use in conjunction with the default and/or custom reporter(s).
   Prevents duplication of error messages when used along with another reporter.
 
@@ -152,7 +154,7 @@ __Plugin options:__
 	  .pipe(htmlhint.failOnError({ suppress: true }))
   ```
 
-### Third party reporter
+### Third-party reporters
 
 [gulp-reporter](https://github.com/gucong3000/gulp-reporter) used in team project, it fails only when error belongs to the current author of git.
 
