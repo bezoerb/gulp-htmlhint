@@ -67,7 +67,7 @@ const htmlhintPlugin = function (options, customRules) {
       const externalOptions = fs.readFileSync(options.htmlhintrc, 'utf-8');
       options = JSON.parse(stripJsonComments(externalOptions));
     } catch (error) {
-      throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc');
+      throw new Error('gulp-htmlhint: Cannot parse .htmlhintrc ' + (error.message || error));
     }
   }
 
@@ -174,6 +174,7 @@ htmlhintPlugin.reporter = function (customReporter, options) {
     if (customReporter === 'fail' || customReporter === 'failOn') {
       return htmlhintPlugin.failOnError();
     }
+
     if (customReporter === 'failAfter') {
       return htmlhintPlugin.failAfterError();
     }
@@ -221,6 +222,7 @@ htmlhintPlugin.failOnError = function (opts) {
         });
       }
     }
+
     cb(error, file);
   });
 };
@@ -247,6 +249,7 @@ htmlhintPlugin.failAfterError = function (opts) {
         globalErrorMessage += messages.join(os.EOL) + os.EOL;
       }
     }
+
     cb(null, file);
   }
 

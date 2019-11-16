@@ -37,16 +37,20 @@ customRules.push({
       } else if (tagName === 'some-tag' && iteration > 0) {
         someTagOccurrences++;
       }
+
       if (!someTagIsFirstEl) {
         reporter.error('The tag <some-tag> must be present as first element.', event.line, event.col, self, event.raw);
         parser.removeListener('tagstart', onTagStart);
       }
+
       if (someTagOccurrences > 1) {
         reporter.error('The tag <some-tag> must be present only once.', event.line, event.col, self, event.raw);
         parser.removeListener('tagstart', onTagStart);
       }
+
       iteration++;
     }
+
     parser.addListener('tagstart', onTagStart);
   }
 });
