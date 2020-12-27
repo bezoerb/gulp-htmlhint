@@ -43,7 +43,7 @@
     "space": 2
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "licenses": [
     {
