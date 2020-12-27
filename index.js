@@ -115,17 +115,11 @@ const htmlhintPlugin = function (options, customRules) {
 
 function getMessagesForFile(file) {
   'use strict';
-  return file.htmlhint.messages.map(msg => {
-    const {error: message} = msg;
+  return file.htmlhint.messages.map(message_ => {
+    const {error: message} = message_;
     let {evidence} = message;
     const {line, col} = message;
-    let detail;
-
-    if (line) {
-      detail = c.yellow('L' + line) + c.red(':') + c.yellow('C' + col);
-    } else {
-      detail = c.yellow('GENERAL');
-    }
+    const detail = line ? c.yellow('L' + line) + c.red(':') + c.yellow('C' + col) : c.yellow('GENERAL');
 
     if (col === 0) {
       evidence = c.red('?') + evidence;
@@ -196,14 +190,14 @@ htmlhintPlugin.reporter = function (customReporter, options) {
   });
 };
 
-htmlhintPlugin.failOnError = function (opts) {
+htmlhintPlugin.failOnError = function (options) {
   'use strict';
-  opts = opts || {};
+  options = options || {};
   return through2.obj((file, enc, cb) => {
     // Something to report and has errors
     let error;
     if (file.htmlhint && !file.htmlhint.success) {
-      if (opts.suppress === true) {
+      if (options.suppress === true) {
         error = new PluginError('gulp-htmlhint', {
           message: 'HTMLHint failed.',
           showStack: false
@@ -211,8 +205,8 @@ htmlhintPlugin.failOnError = function (opts) {
       } else {
         const {errorCount} = file.htmlhint;
         const plural = errorCount === 1 ? '' : 's';
-        const msg = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
-        const messages = [msg].concat(getMessagesForFile(file).map(m => {
+        const message = c.cyan(errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+        const messages = [message].concat(getMessagesForFile(file).map(m => {
           return m.message;
         }));
 
@@ -227,22 +221,22 @@ htmlhintPlugin.failOnError = function (opts) {
   });
 };
 
-htmlhintPlugin.failAfterError = function (opts) {
+htmlhintPlugin.failAfterError = function (options) {
   'use strict';
-  opts = opts || {};
+  options = options || {};
   let globalErrorCount = 0;
   let globalErrorMessage = '';
   return through2.obj(check, summarize);
 
   function check(file, enc, cb) {
     if (file.htmlhint && !file.htmlhint.success) {
-      if (opts.suppress === true) {
+      if (options.suppress === true) {
         globalErrorCount += file.htmlhint.errorCount;
       } else {
         globalErrorCount += file.htmlhint.errorCount;
         const plural = file.htmlhint.errorCount === 1 ? '' : 's';
-        const msg = c.cyan(file.htmlhint.errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
-        const messages = [msg].concat(getMessagesForFile(file).map(m => {
+        const message = c.cyan(file.htmlhint.errorCount) + ' error' + plural + ' found in ' + c.magenta(file.path);
+        const messages = [message].concat(getMessagesForFile(file).map(m => {
           return m.message;
         }));
 

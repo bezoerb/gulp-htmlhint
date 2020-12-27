@@ -27,18 +27,18 @@ customRules.push({
   init(parser, reporter) {
     const self = this;
     let someTagOccurrences = 0;
-    let someTagIsFirstEl = false;
+    let someTagIsFirstElement = false;
     let iteration = 0;
     function onTagStart(event) {
       const tagName = event.tagName.toLowerCase();
       if (tagName === 'some-tag' && iteration === 0) {
-        someTagIsFirstEl = true;
+        someTagIsFirstElement = true;
         someTagOccurrences++;
       } else if (tagName === 'some-tag' && iteration > 0) {
         someTagOccurrences++;
       }
 
-      if (!someTagIsFirstEl) {
+      if (!someTagIsFirstElement) {
         reporter.error('The tag <some-tag> must be present as first element.', event.line, event.col, self, event.raw);
         parser.removeListener('tagstart', onTagStart);
       }
