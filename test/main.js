@@ -166,7 +166,7 @@ describe('gulp-htmlhint', () => {
 
     const file = getFile('fixtures/invalid.html');
 
-    const stream = htmlhint('test/htmlhintrc.json');
+    const stream = htmlhint('./test/htmlhintrc.json');
     stream.on('data', newFile => {
       ++a;
       should.exist(newFile.htmlhint.success);

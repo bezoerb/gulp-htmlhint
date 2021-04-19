@@ -56,7 +56,7 @@ const htmlhintPlugin = function (options, customRules) {
   if (typeof options === 'string') {
     // Don't catch readFile errors, let them bubble up
     options = {
-      htmlhintrc: './' + options
+      htmlhintrc: options
     };
   }
 
