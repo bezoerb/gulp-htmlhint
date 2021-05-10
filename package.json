@@ -33,7 +33,7 @@
   "devDependencies": {
     "coveralls": "^3.1.0",
     "htmlhint-stylish": "^1.0.3",
-    "mocha": "^6.2.2",
+    "mocha": "^8.4.0",
     "nyc": "^14.1.1",
     "should": "^13.2.3",
     "vinyl-fs": "^3.0.3",
