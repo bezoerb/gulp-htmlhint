@@ -1,4 +1,4 @@
-# gulp-htmlhint [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
+# gulp-htmlhint [![NPM version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url] 
 
 > [htmlhint](https://github.com/yaniswang/HTMLHint) wrapper for [gulp](https://github.com/wearefractal/gulp) to validate your HTML
 
@@ -165,8 +165,6 @@ Default value: `false`
 [npm-url]: https://npmjs.org/package/gulp-htmlhint
 [npm-image]: https://badge.fury.io/js/gulp-htmlhint.svg
 
-[travis-url]: https://travis-ci.org/bezoerb/gulp-htmlhint
-[travis-image]: https://secure.travis-ci.org/bezoerb/gulp-htmlhint.svg?branch=master
+[ci-url]: https://github.com/addyosmani/bezoerb/actions?workflow=Tests
+[ci-image]: https://github.com/addyosmani/bezoerb/workflows/Tests/badge.svg
 
-[depstat-url]: https://david-dm.org/bezoerb/gulp-htmlhint
-[depstat-image]: https://david-dm.org/bezoerb/gulp-htmlhint.svg
