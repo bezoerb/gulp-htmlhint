@@ -165,6 +165,5 @@ Default value: `false`
 [npm-url]: https://npmjs.org/package/gulp-htmlhint
 [npm-image]: https://badge.fury.io/js/gulp-htmlhint.svg
 
-[ci-url]: https://github.com/addyosmani/bezoerb/actions?workflow=Tests
-[ci-image]: https://github.com/addyosmani/bezoerb/workflows/Tests/badge.svg
-
+[ci-url]: https://github.com/bezoerb/gulp-htmlhint/actions/workflows/test.yml
+[ci-image]: https://github.com/bezoerb/gulp-htmlhint/actions/workflows/test.yml/badge.svg
